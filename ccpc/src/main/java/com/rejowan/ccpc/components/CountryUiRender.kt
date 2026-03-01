@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,10 +30,10 @@ import com.rejowan.ccpc.PickerCustomization
 
 @Composable
 fun RenderCountryList(
-    itemPadding : Int ,
-    filteredCountries : List<Country> ,
-    pickerCustomization : PickerCustomization ,
-    onItemClicked : (Country) -> Unit ,
+    itemPadding : Int,
+    filteredCountries : List<Country>,
+    pickerCustomization : PickerCustomization,
+    onItemClicked : (Country) -> Unit,
     textStyle : TextStyle,
     selectedCountry: Country? = null,  // New parameter for highlighting selected country
     searchQuery: String = ""  // New parameter to show empty state only when searching
@@ -53,7 +53,7 @@ fun RenderCountryList(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Search,
+                    imageVector = Icons.Default.Search,
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
                     tint = MaterialTheme.colorScheme.outline
@@ -101,6 +101,8 @@ fun RenderCountryList(
                     onCountryClicked = { onItemClicked(countryItem) } ,
                     countryTextStyle = textStyle ,
                     itemPadding = itemPadding ,
+                    itemSelectorColor = pickerCustomization.itemSelectorColor?:
+                    MaterialTheme.colorScheme.secondaryContainer,
                     showCountryIso = pickerCustomization.showCountryIso ,
                     showCountryCode = pickerCustomization.showCountryCode ,
                     showCountryFlag = pickerCustomization.showFlag ,

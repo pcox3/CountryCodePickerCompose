@@ -22,8 +22,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +46,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +73,7 @@ internal fun CountryHeaderDialog(
 
         IconButton(onClick = { onDismiss() }) {
             Icon(
-                Icons.Outlined.Clear,
+                Icons.Default.Clear,
                 contentDescription = "Close dialog",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -109,12 +108,14 @@ internal fun CountrySearch(
     hint: String = "Search Country",
     showClearIcon: Boolean = true,
     requestFocus: Boolean = true,
-    onFocusChanged: (FocusState) -> Unit = {}
+    searchBarTheme: SearchBarTheme = SearchBarTheme(),
+    onFocusChanged: (FocusState) -> Unit = {},
 ) {
 
     val requester = remember {
         FocusRequester()
     }
+
     LaunchedEffect(Unit) {
         if (requestFocus) {
             requester.requestFocus()
@@ -122,6 +123,12 @@ internal fun CountrySearch(
             requester.freeFocus()
         }
     }
+
+    // Resolve colors with theme defaults
+    val resolvedSearchIconTint = searchBarTheme.searchIconTint ?: MaterialTheme.colorScheme.onSurfaceVariant
+    val resolvedClearIconTint = searchBarTheme.clearIconTint ?: MaterialTheme.colorScheme.onSurfaceVariant
+    val resolvedBorderColor = searchBarTheme.searchBorderColor ?: MaterialTheme.colorScheme.outline
+    val resolvedBorderColorUnfocused = searchBarTheme.searchBorderColorUnfocused ?: MaterialTheme.colorScheme.outlineVariant
 
     // Material 3 search field with proper padding and styling
     OutlinedTextField(
@@ -133,18 +140,18 @@ internal fun CountrySearch(
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
-        textStyle = MaterialTheme.typography.bodyLarge,  // Material 3 typography
+        textStyle = textStyle,  // Material 3 typography
         placeholder = {
             Text(
                 text = hint,
-                style = MaterialTheme.typography.bodyLarge
+                style = textStyle
             )
         },
         leadingIcon = {
             Icon(
-                Icons.Outlined.Search,
+                Icons.Default.Search,
                 contentDescription = "Search",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = resolvedSearchIconTint
             )
         },
         trailingIcon = {
@@ -156,19 +163,21 @@ internal fun CountrySearch(
             ) {
                 IconButton(onClick = { onValueChange("") }) {
                     Icon(
-                        Icons.Outlined.Clear,
+                        Icons.Default.Clear,
                         contentDescription = "Clear search",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = resolvedClearIconTint
                     )
                 }
             }
         },
         shape = RoundedCornerShape(28.dp),  // Material 3 search bar shape
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.outline,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            focusedBorderColor = resolvedBorderColor,
+            unfocusedBorderColor = resolvedBorderColorUnfocused,
+            focusedContainerColor = searchBarTheme.searchBackgroundColor
+                ?: MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = searchBarTheme.searchBackgroundColor
+                ?: MaterialTheme.colorScheme.surface,
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
@@ -188,19 +197,16 @@ internal fun CountryUI(
     showCountryIso: Boolean = false,
     showCountryCode: Boolean = true,
     countryTextStyle: TextStyle,
+    itemSelectorColor: Color,
     itemPadding: Int = 10,
     isSelected: Boolean = false  // New parameter for selection state
-
 ) {
 
     Row(
         Modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)  // Material 3 list item minimum height
-            .background(
-                if (isSelected) MaterialTheme.colorScheme.secondaryContainer
-                else Color.Transparent
-            )
+            .background(if (isSelected) itemSelectorColor else Color.Transparent)
             .clickable(
                 onClickLabel = "Select ${country.countryName}",
                 role = Role.Button,

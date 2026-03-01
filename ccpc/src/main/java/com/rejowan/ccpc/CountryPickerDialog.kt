@@ -20,14 +20,14 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun CountryPickerDialog(
-    modifier : Modifier = Modifier ,
-    onDismissRequest : () -> Unit ,
-    onItemClicked : (item : Country) -> Unit ,
-    textStyle : TextStyle = TextStyle() ,
-    listOfCountry : List<Country> ,
-    pickerCustomization : PickerCustomization = PickerCustomization() ,
-    itemPadding : Int = 10 ,
-    backgroundColor : Color = MaterialTheme.colorScheme.surface ,
+    modifier : Modifier = Modifier,
+    onDismissRequest : () -> Unit,
+    onItemClicked : (item : Country) -> Unit,
+    textStyle : TextStyle = TextStyle(),
+    listOfCountry : List<Country>,
+    pickerCustomization : PickerCustomization = PickerCustomization(),
+    itemPadding : Int = 10,
+    backgroundColor : Color = MaterialTheme.colorScheme.surface,
     selectedCountry: Country? = null  // New parameter for highlighting selected country
 ) {
     
@@ -61,7 +61,7 @@ fun CountryPickerDialog(
         )
     ) {
         Surface(
-            color = MaterialTheme.colorScheme.surface,
+            color = backgroundColor,
             modifier = Modifier
                 .fillMaxWidth(0.92f)  // 92% of screen width with margins
                 .fillMaxHeight(0.85f)  // Max 85% screen height
@@ -87,11 +87,17 @@ fun CountryPickerDialog(
                 Spacer(modifier = Modifier.height(itemPadding.dp))
 
                 CountrySearch(
-                    value = value ,
-                    onValueChange = { value = it } ,
-                    textStyle = textStyle ,
-                    hint = pickerCustomization.searchHintText ?: stringResource(pickerCustomization.searchHint) ,
-                    showClearIcon = pickerCustomization.showSearchClearIcon ,
+                    value = value,
+                    onValueChange = { value = it },
+                    textStyle = textStyle,
+                    hint = pickerCustomization.searchHintText ?: stringResource(pickerCustomization.searchHint),
+                    showClearIcon = pickerCustomization.showSearchClearIcon,
+                    searchBarTheme = SearchBarTheme(
+                        searchIconTint = pickerCustomization.searchBarTheme?.searchIconTint,
+                        clearIconTint = pickerCustomization.searchBarTheme?.clearIconTint,
+                        searchBorderColor = pickerCustomization.searchBarTheme?.searchBorderColor,
+                        searchBorderColorUnfocused = pickerCustomization.searchBarTheme?.searchBorderColorUnfocused
+                    )
                 )
 
                 // Material 3: Search result count
